@@ -2,12 +2,12 @@ package gmcredentials
 
 import (
 	"fmt"
+	gmx509 "github.com/tjfoc/gmsm/x509"
 	"io/ioutil"
 	"log"
 	"net"
 	"testing"
 
-	"github.com/tjfoc/gmsm/sm2"
 	"github.com/tjfoc/gmtls"
 	"github.com/tjfoc/gmtls/gmcredentials/echo"
 	"golang.org/x/net/context"
@@ -38,7 +38,7 @@ func serverRun() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	certPool := sm2.NewCertPool()
+	certPool := gmx509.NewCertPool()
 	cacert, err := ioutil.ReadFile(ca)
 	if err != nil {
 		log.Fatal(err)
@@ -67,7 +67,7 @@ func clientRun() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	certPool := sm2.NewCertPool()
+	certPool := gmx509.NewCertPool()
 	cacert, err := ioutil.ReadFile(ca)
 	if err != nil {
 		log.Fatal(err)

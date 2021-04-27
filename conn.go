@@ -21,13 +21,12 @@ import (
 	"crypto/subtle"
 	"errors"
 	"fmt"
+	gmx509 "github.com/tjfoc/gmsm/x509"
 	"io"
 	"net"
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"github.com/tjfoc/gmsm/sm2"
 )
 
 // A Conn represents a secured connection.
@@ -58,10 +57,10 @@ type Conn struct {
 	cipherSuite      uint16
 	ocspResponse     []byte   // stapled OCSP response
 	scts             [][]byte // signed certificate timestamps from server
-	peerCertificates []*sm2.Certificate
+	peerCertificates []*gmx509.Certificate
 	// verifiedChains contains the certificate chains that we built, as
 	// opposed to the ones presented by the server.
-	verifiedChains [][]*sm2.Certificate
+	verifiedChains [][]*gmx509.Certificate
 	// serverName contains the server name indicated by the client, if any.
 	serverName string
 	// secureRenegotiation is true if the server echoed the secure

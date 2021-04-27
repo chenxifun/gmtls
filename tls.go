@@ -24,6 +24,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	gmx509 "github.com/tjfoc/gmsm/x509"
 	"io/ioutil"
 	"net"
 	"strings"
@@ -254,7 +255,7 @@ func X509KeyPair(certPEMBlock, keyPEMBlock []byte) (Certificate, error) {
 
 	// We don't need to parse the public key for TLS, but we so do anyway
 	// to check that it looks sane and matches the private key.
-	x509Cert, err := sm2.ParseCertificate(cert.Certificate[0])
+	x509Cert, err := gmx509.ParseCertificate(cert.Certificate[0])
 	if err != nil {
 		return fail(err)
 	}
@@ -306,7 +307,7 @@ func parsePrivateKey(der []byte) (crypto.PrivateKey, error) {
 			return nil, errors.New("tls: found unknown private key type in PKCS#8 wrapping")
 		}
 	}
-	if key, err := sm2.ParsePKCS8UnecryptedPrivateKey(der); err == nil {
+	if key, err := gmx509.ParsePKCS8UnecryptedPrivateKey(der); err == nil {
 		return key, nil
 	}
 	return nil, errors.New("tls: failed to parse private key")

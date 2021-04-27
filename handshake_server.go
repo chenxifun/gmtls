@@ -23,6 +23,7 @@ import (
 	"encoding/asn1"
 	"errors"
 	"fmt"
+	gmx509 "github.com/tjfoc/gmsm/x509"
 	"io"
 
 	"github.com/tjfoc/gmsm/sm2"
@@ -736,21 +737,21 @@ func (hs *serverHandshakeState) processCertsFromClient(certificates [][]byte) (c
 	c := hs.c
 
 	hs.certsFromClient = certificates
-	certs := make([]*sm2.Certificate, len(certificates))
+	certs := make([]*gmx509.Certificate, len(certificates))
 	var err error
 	for i, asn1Data := range certificates {
-		if certs[i], err = sm2.ParseCertificate(asn1Data); err != nil {
+		if certs[i], err = gmx509.ParseCertificate(asn1Data); err != nil {
 			c.sendAlert(alertBadCertificate)
 			return nil, errors.New("tls: failed to parse client certificate: " + err.Error())
 		}
 	}
 
 	if c.config.ClientAuth >= VerifyClientCertIfGiven && len(certs) > 0 {
-		opts := sm2.VerifyOptions{
+		opts := gmx509.VerifyOptions{
 			Roots:         c.config.ClientCAs,
 			CurrentTime:   c.config.time(),
-			Intermediates: sm2.NewCertPool(),
-			KeyUsages:     []sm2.ExtKeyUsage{sm2.ExtKeyUsageClientAuth},
+			Intermediates: gmx509.NewCertPool(),
+			KeyUsages:     []gmx509.ExtKeyUsage{gmx509.ExtKeyUsageClientAuth},
 		}
 
 		for _, cert := range certs[1:] {
